@@ -2,16 +2,13 @@
 // Include the database connection file
 require_once 'db.connect.php';
 
-// Check if the connection is established
-if ($conn === null) {
-    die("Database connection failed!");
-}
-
-
-
+// Configuration
+define('UPLOAD_DIR', 'uploads/');
+define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10 MB
+$allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $staff_id = $_POST['staff_id'];
+    $staff_id = $_POST['staff_id'] ?? null;
     $stmt = $conn->prepare("SELECT full_name FROM staff WHERE staff_id = ?");
     $stmt->bind_param("s", $staff_id);
     $stmt->execute();
@@ -20,75 +17,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $staff_name = $row['full_name'];
-        $targetDir = "uploads/" . preg_replace("/[^a-zA-Z0-9_]/", " ", $staff_name); // Sanitizing folder name
+        $safeFolderName = preg_replace("/[^a-zA-Z0-9_]/", "_", $staff_name); // Sanitize folder name
+        $targetDir = UPLOAD_DIR . $safeFolderName;
 
-        // Check if the directory exists; if not, create it
+        // Create the directory if it doesn't exist
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
 
-
-
-
         // Loop through uploaded files
         foreach ($_FILES['files']['name'] as $key => $fileName) {
+            $fileTmp = $_FILES['files']['tmp_name'][$key];
+            $fileSize = $_FILES['files']['size'][$key];
+            $fileType = mime_content_type($fileTmp);
+            $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
             $targetFile = $targetDir . "/" . basename($fileName);
 
-            // Check file size (max 10MB)
-            if ($_FILES['files']['size'][$key] > 1000485760) {
-                echo "<div class='alert alert-danger'>File size exceeds 10MB limit.</div>";
+            // Validate file size
+            if ($fileSize > MAX_FILE_SIZE) {
+                echo "<div class='alert alert-danger'>File size exceeds the 10MB limit: $fileName.</div>";
                 continue;
             }
 
-            // Check file type (only allow images and PDF files)
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf', 'application/docx', 'application/pptx', 'application/doc'];
-            $fileType = mime_content_type($_FILES['files']['tmp_name'][$key]);
+            // Validate file type
             if (!in_array($fileType, $allowedTypes)) {
-                echo "<div class='alert alert-danger'>Invalid file type. Only JPG, PNG, DOC, and PDF files are allowed.</div>";
+                echo "<div class='alert alert-danger'>Invalid file type for $fileName. Allowed: JPG, PNG, PDF, DOCX.</div>";
                 continue;
             }
 
-
-
-
-
-
-
-
-
-
-//Handle the form submission to process uploaded files and save them to the corresponding folder
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['folder_name'])) {
-    $folderName = $_POST['folder_name'];
-
-    foreach ($_FILES['files']['name'] as $key => $fileName) {
-        $fileTmp = $_FILES['files']['tmp_name'][$key];
-        $targetFile = $folderName . '/' . basename($fileName);
-
-        // Validate file size and type (if needed)
-        if (move_uploaded_file($fileTmp, $targetFile)) {
-            echo "<div class='alert alert-success'>File '$fileName' uploaded successfully to $folderName.</div>";
-        } else {
-            echo "<div class='alert alert-danger'>Failed to upload file: $fileName.</div>";
-        }
-    }
-}
-
-
-
-
-            // Move the file if it's valid
-            if (move_uploaded_file($_FILES['files']['tmp_name'][$key], $targetFile)) {
-                // Store file info in the database
+            // Move the file and save record in the database
+            if (move_uploaded_file($fileTmp, $targetFile)) {
                 $stmt = $conn->prepare("INSERT INTO personnel_file (staff_id, full_name, file_name, uploaded_at) VALUES (?, ?, ?, NOW())");
                 $stmt->bind_param("sss", $staff_id, $staff_name, $fileName);
-                $stmt->execute();
+                if ($stmt->execute()) {
+                    echo "<div class='alert alert-success'>File '$fileName' uploaded successfully.</div>";
+                } else {
+                    echo "<div class='alert alert-danger'>Database error: {$stmt->error}.</div>";
+                }
             } else {
                 echo "<div class='alert alert-danger'>Failed to upload file: $fileName.</div>";
             }
         }
-
-        echo "<div class='alert alert-success'>Files uploaded successfully!</div>";
     } else {
         echo "<div class='alert alert-danger'>Invalid staff ID.</div>";
     }
@@ -227,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['folder_name'])) {
                     <form method='POST' enctype='multipart/form-data' class='mt-2'>
                         <input type='hidden' name='folder_name' value='$folder'>
                         <input type='file' name='files[]' multiple class='form-control form-control-sm'>
-                        <button type='submit' class='btn btn-uhas-yellow btn-sm mt-2'>Add Files</button>
+                        
                     </form>
                 </div>";
         }

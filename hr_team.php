@@ -2,28 +2,41 @@
 // HR Team members' data (you can fetch this from a database in real-world applications)
 $hr_team = [
     [
-        'name' => 'DIRECTOR AMOAH',
-        'title' => 'HR Director',
-        'position' => 'Head of HR',
+        'name' => 'GODFRED AMOAH',
+        'title' => 'Director',
+        'position' => 'Director of Human Resource',
         'image' => 'uhas_logo.png'
     ],
     [
-        'name' => 'MR. GEORGE',
-        'title' => 'HR Procurement',
-        'position' => 'Head of Procurement',
+        'name' => 'MR. GEORGE LOMOTEY',
+        'title' => 'Head of Department',
+        'position' => 'Recruitment, Promotion & Separation',
         'image' => 'uhas_logo.png'
     ],
     [
-        'name' => 'MADAM DELA',
-        'title' => 'HR HOD',
-        'position' => 'Staff Relations & Performance',
+        'name' => 'DELALI ADONU',
+        'title' => 'Head of Department',
+        'position' => 'Compensation & Benefits',
         'image' => 'uhas_logo.png'
     ],
     [
-        'name' => 'MADAM DORIS',
-        'title' => 'HR HOD',
+        'name' => 'DORIS MAWUFEMOR ADUKPOH',
+        'title' => 'Head of Department',
         'position' => 'Payroll and Benefits',
         'image' => 'uhas_logo.png'
+    ],
+
+     [
+        'name' => 'EDEM K. EGLE',
+        'title' => '',
+        'position' => 'Principal Administrative Assistant',
+        'image' => 'uhas_logo.png'
+    ],
+     [
+        'name' => 'FREDA LOTSU',
+        'title' => '',
+        'position' => 'Senior Administrative Assistant',
+        'image' => 'Freda.jpg'
     ]
 ];
 ?>

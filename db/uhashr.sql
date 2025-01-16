@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 27, 2024 at 09:41 PM
+-- Generation Time: Jan 09, 2025 at 02:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -50,6 +50,13 @@ CREATE TABLE `activities` (
   `remarks` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `activities`
+--
+
+INSERT INTO `activities` (`id`, `activity_title`, `activity_date`, `activity_time`, `venue`, `directorate`, `number_of_attendees`, `approved_by`, `remarks`) VALUES
+(1, 'WORK RESUMES', '2024-12-30', '21:57:00', 'UHAS', 'Directorate of HR', NULL, NULL, '');
+
 -- --------------------------------------------------------
 
 --
@@ -71,8 +78,10 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`, `first_name`, `last_name`, `email`, `created_at`) VALUES
-(1, 'uhashr', '7bcc2f69919a98797e4dbfbeac0b4ec5', 'Hr', 'uhas', 'hr@uhas.edu.gh', '2024-12-13 12:29:09'),
-(4, 'Gabby', 'ecfed160b579578bad2ca8bd1c1c9070', 'Gabriel', 'Akikor', 'gakikor@uhas.edu.gh', '2024-12-17 14:49:03');
+(1, 'Admin', 'd3c358692f876f59138b9596c29a924a', 'Hr', 'Uhas', 'hr@uhas.edu.gh', '2024-12-13 12:29:09'),
+(4, 'Gakikor', '5a306e6ba466380922bfeaa5809e6112', 'Gabriel', 'Akikor', 'gakikor@uhas.edu.gh', '2024-12-17 14:49:03'),
+(5, 'Gamoah', 'd37371f5be42af49c7888b1ef4911568', 'Godfred', 'Amoah', 'gamoah@uhas.edu.gh', '2025-01-07 18:26:19'),
+(6, 'Dadonu', 'c6dbb592dd48e826bec08e51cd24295a', 'Delali', 'Adonu', 'dadonu@uhas.edu.gh', '2025-01-09 09:26:45');
 
 -- --------------------------------------------------------
 
@@ -99,6 +108,18 @@ CREATE TABLE `campus` (
   `id` int(11) NOT NULL,
   `name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `campus`
+--
+
+INSERT INTO `campus` (`id`, `name`) VALUES
+(1, 'Trafalgar'),
+(2, 'Hohoe Campus'),
+(3, 'Main Campus Phase 1'),
+(4, 'Main Campus Phase 2'),
+(5, 'Basic School'),
+(6, 'Dave Campus');
 
 -- --------------------------------------------------------
 
@@ -177,6 +198,40 @@ CREATE TABLE `departments` (
   `department_name` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `departments`
+--
+
+INSERT INTO `departments` (`dept_id`, `department_name`) VALUES
+(2, 'Archival Unit'),
+(3, 'Directorate of Academic Affairs'),
+(4, 'Directorate of Finance'),
+(5, 'Directorate of Human Resource'),
+(6, 'Directorate of ICT'),
+(7, 'Directorate of Internal Audit'),
+(8, 'Directorate of Quality Assurance'),
+(9, 'Directorate of Works and Physical Development'),
+(10, 'International Programmes Office'),
+(11, 'Legal Service Unit'),
+(12, 'Office of Graduate Studies'),
+(13, 'Office of Student Affairs'),
+(14, 'Office of the Pro-Vice Chancellor'),
+(15, 'Office of the Registrar'),
+(16, 'Office of the Vice Chancellor'),
+(17, 'Procurement and Supply Unit'),
+(18, 'UHAS Basic School'),
+(19, 'Vocational Training Unit'),
+(20, 'Fred N. Binka School of Public Health'),
+(21, 'Institute of Health Research'),
+(22, 'Institute of Traditional and Alternative Medicine'),
+(23, 'School of Allied Health Sciences'),
+(24, 'School of Basic and Biomedical Sciences'),
+(25, 'School of Dentistry'),
+(26, 'School of Nursing and Midwifery'),
+(27, 'School of Pharmacy'),
+(28, 'School of Sports and Exercise Medicine'),
+(29, 'University Library');
+
 -- --------------------------------------------------------
 
 --
@@ -188,6 +243,19 @@ CREATE TABLE `directories` (
   `name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `directories`
+--
+
+INSERT INTO `directories` (`id`, `name`) VALUES
+(3, 'Directorate of Academic Affairs'),
+(4, 'Directorate of Finance'),
+(5, 'Directorate of Human Resource'),
+(6, 'Directorate of ICT'),
+(7, 'Directorate of Internal Audit'),
+(8, 'Directorate of Quality Assurance'),
+(9, 'Directorate of Works and Physical Development');
+
 -- --------------------------------------------------------
 
 --
@@ -198,6 +266,18 @@ CREATE TABLE `employee_status` (
   `id_employee_status` int(11) NOT NULL,
   `employee_status_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `employee_status`
+--
+
+INSERT INTO `employee_status` (`id_employee_status`, `employee_status_name`) VALUES
+(1, 'Permanent '),
+(2, 'Contract'),
+(3, 'Part-Time'),
+(4, 'Post-Retirement Contract'),
+(5, 'National Service Personnel '),
+(6, 'National Service Personnel ');
 
 -- --------------------------------------------------------
 
@@ -232,6 +312,24 @@ CREATE TABLE `highest_qualification` (
   `id_highest_qualification` int(11) NOT NULL,
   `highest_qualification_name` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `highest_qualification`
+--
+
+INSERT INTO `highest_qualification` (`id_highest_qualification`, `highest_qualification_name`) VALUES
+(2, 'Doctorate Degree(PhD)'),
+(3, 'Master of Philosophy(Mphil)'),
+(9, 'Master of Science(Msc.)'),
+(10, 'Master of Business  Administration(MBA)'),
+(11, 'Bachelor of Technology Degree(Btech)'),
+(12, 'Bachelor of Science Degree(BSc.)'),
+(13, 'Bachelor of Arts Degree(BA)'),
+(14, 'Higher National Diploma(HND)'),
+(15, 'Diploma'),
+(16, 'SSSCE/WASSCE'),
+(17, 'BECE'),
+(18, 'Professional Certificate');
 
 -- --------------------------------------------------------
 
@@ -270,6 +368,14 @@ CREATE TABLE `institutes` (
   `id` int(11) NOT NULL,
   `name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `institutes`
+--
+
+INSERT INTO `institutes` (`id`, `name`) VALUES
+(21, 'Institute of Health Research'),
+(22, 'Institute of Traditional and Alternative Medicine');
 
 -- --------------------------------------------------------
 
@@ -316,7 +422,9 @@ CREATE TABLE `login_logs` (
 --
 
 INSERT INTO `login_logs` (`id`, `user_id`, `username`, `first_name`, `last_name`, `email`, `login_time`, `actions`, `ip_address`, `user_agent`) VALUES
-(1, 1, 'uhashr', 'Hr', 'uhas', 'hr@uhas.edu.gh', '2024-12-17 15:40:56', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0');
+(1, 1, 'uhashr', 'Hr', 'uhas', 'hr@uhas.edu.gh', '2024-12-17 15:40:56', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0'),
+(2, 1, 'uhashr', 'Hr', 'uhas', 'hr@uhas.edu.gh', '2024-12-30 13:15:31', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0'),
+(3, 1, 'uhashr', 'Hr', 'uhas', 'hr@uhas.edu.gh', '2024-12-30 13:16:10', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0');
 
 -- --------------------------------------------------------
 
@@ -615,7 +723,7 @@ CREATE TABLE `staff` (
   `staff_id` varchar(11) NOT NULL,
   `controller_no` varchar(50) NOT NULL,
   `ghanacard_no` text NOT NULL,
-  `duty_status` varchar(20) NOT NULL,
+  `duty_status` varchar(50) NOT NULL,
   `status` varchar(50) DEFAULT NULL,
   `from_date` date DEFAULT NULL,
   `to_date` date DEFAULT NULL,
@@ -661,11 +769,8 @@ CREATE TABLE `staff` (
 --
 
 INSERT INTO `staff` (`id`, `staff_id`, `controller_no`, `ghanacard_no`, `duty_status`, `status`, `from_date`, `to_date`, `first_name`, `middle_name`, `last_name`, `title`, `full_name`, `designation`, `employee_status`, `date_on_present_grade`, `present_appointment`, `dob`, `marital_status`, `gender`, `hometown`, `qualifications`, `details_of_highest_qualification`, `highest_qualification`, `speciality`, `first_appointment`, `date_hired`, `assumption_of_duty_date`, `other_appointment`, `from_appointment`, `to_appointment`, `staff_category`, `department`, `directory`, `gog_unit`, `campus`, `end_of_contract_date`, `years_with_uhas`, `phone`, `email_official`, `email_private`, `birthday`, `files`) VALUES
-(186, 'UHAS-00458', '7031', 'GHA-328743953-4', 'AT POST', 'Active', '0000-00-00', '0000-00-00', 'Alhassan', 'Robert', 'Kaba', 'Dr.', 'Alhassan Robert Kaba Dr.', 'Director of Human Resource', 'AT POST', '2024-12-16', 'Associate Professor', '2004-12-16', 'Single', 'Male', 'Ga Mashi', 'MSc HRM', 'PhD in HRM', 'Masters', 'HRM', '2024-11-01', '2024-11-01', '2024-11-01', 'HOD', '2024-11-01', '2025-11-01', 'Senior Administrative staff', 'PROCUREMENT', 'Allocation', 'GTEC', 'Hohoe', '0000-00-00', 20, '+233 598-121-33', 'yie@gmail.com', 'yie@gmail.com', '1999-12-16', 'img.67'),
-(187, 'UHAS-00911', '1303', 'GHA-948539559-7', 'AT POST', 'Active', '0000-00-00', '0000-00-00', 'Mottey', 'Elsie', 'Ewoenam', 'Ms.', 'Mottey Elsie Ewoenam Ms.', 'Assistant Registrar', 'AT POST', '2024-12-16', 'Professor (Post-Retirement Contract)', '1994-12-16', 'Married', 'Female', 'Tema', 'MTech', 'PhD in HRM', 'Phd', 'medicine', '2024-11-01', '2024-11-01', '2024-11-01', 'Director', '2024-11-01', '2026-11-01', 'Junior  Staff', 'Directorate of ICT', 'administrative computing', '', 'Main campus phase 1', '0000-00-00', 10, '+233 598-121-34', 'com@gmail.com', 'jimmy@gmail. com', '1999-12-17', 'img.68'),
-(188, 'UHAS-00765', '9103', 'GHA-572348249-8', 'LEAVE OF ABSENCE', 'inactive', '2024-11-01', '2025-11-01', 'Mottey', 'Elorm', 'Barbara', 'Ms.', 'Mottey Elorm Barbara  Ms.', 'Senior Assistant Registrar', 'LEAVE OF ABSENCE', '2024-12-16', 'Professor (Post-Retirement Contract)', NULL, 'Single', 'Female', 'Nakpaduri', 'HND', 'MBA in HRM', 'Diploma', 'Medicine', '2024-11-01', '2024-11-01', '2024-11-01', 'Heads of Unit', '2024-11-01', '2027-11-01', 'Junior staff', 'Directorate of Human Resource', 'Benefits and Compensations', '', 'Main campus phase 2', '0000-00-00', 15, '+233 598-121-34', 'junior@gmail.com', 'candy@gmail.com', '1999-01-17', 'ipj.1'),
-(189, 'UHAS-00314', '3011', 'GHA-486299237-1', 'STUDY LEAVE WITH PAY', 'Inactive', '2024-11-01', '2025-11-01', 'Senaya', 'Stephen', 'Kwame', 'Mr.', 'Senaya Stephen Kwame Mr.', 'Principal Administrative Assistant', 'STUDY LEAVE WITH PAY', '2024-12-16', 'Professor (Post-Retirement Contract)', '1994-01-10', 'Divorced', 'Male', 'North', 'Mphil ICT', 'PhD in HRM', 'Degree', 'ICT', '2024-11-01', '2024-11-01', '2024-11-01', 'Dean', '2024-11-01', '2028-11-01', 'Academic staff', 'Directorate of Finance', 'Payroll unit', '', 'Tralfagar', '0000-00-00', 4, '+233 598-121-34', 'kam@gmail.com', 'jamma@gmail.com', '1999-01-10', 'jpg'),
-(190, 'UHAS-00976', '4311', 'GHA-782982810-9', 'STUDY LEAVE WITHOUT ', 'Inactive', '2024-11-01', '2025-11-01', 'Mohammed', 'Issaka', 'Aziz', 'Mr.', 'Mohammed Issaka Mr.', 'Former Director of Human Resource', 'STUDY LEAVE WITHOUT PAY', '2024-12-16', 'Professor (Post-Retirement Contract)', '1994-01-10', 'Married', 'Male', 'Osu', 'Degree', 'PhD in HRM', 'PhD', 'Cyber Crime', '2024-11-01', '2024-11-01', '2024-11-01', 'Coordinator', '2024-11-01', '2027-11-01', 'Professional Staff', 'Directorate of Works and Physical Development ', 'estates', '', 'Tralfagar', '0000-00-00', 8, '+233 598-121-34', 'kamkam@gmail.com', 'azaro@gmail.com', '1999-01-10', 'ng.01');
+(186, 'UHAS-00458', '7031', 'GHA-328743953-4', 'AT POST', 'Active', '0000-00-00', '0000-00-00', 'Alhassan', 'Robert', 'Kaba', 'Dr.', 'Alhassan Robert Kaba Dr.', 'Director of Human Resource', 'Permanent', '2024-12-16', 'Associate Professor', '2004-12-16', 'Single', 'Male', 'Ga Mashi', 'MSc HRM', 'PhD in HRM', 'Masters', 'HRM', '2024-11-01', '2024-11-01', '2024-11-01', 'HOD', '2024-11-01', '2025-11-01', 'Senior Administrative staff', 'PROCUREMENT', 'Allocation', 'GTEC', 'Hohoe', NULL, 20, '+233 598-121-33', 'yie@gmail.com', 'yie@gmail.com', '1999-12-30', 'img.67'),
+(187, 'UHAS-00911', '1303', 'GHA-948539559-7', 'FELLOWSHIP', 'inactive', '0000-00-00', '0000-00-00', 'Mottey', 'Elsie', 'Ewoenam', 'Ms.', 'Mottey Elsie Ewoenam Ms.', 'Assistant Registrar', 'permanent', '2024-12-16', 'Professor (Post-Retirement Contract)', '1994-12-16', 'Married', 'Female', 'Tema', 'MTech', 'PhD in HRM', 'Phd', 'medicine', '2024-11-01', '2024-11-01', '2024-11-01', 'Director', '2024-11-01', '2026-11-01', 'Junior  Staff', 'Directorate of ICT', 'administrative computing', '', 'Main campus phase 1', NULL, 10, '+233 598-121-34', 'com@gmail.com', 'jimmy@gmail. com', '1999-12-31', 'img.68');
 
 -- --------------------------------------------------------
 
@@ -711,6 +816,298 @@ CREATE TABLE `uhas_designation` (
   `designation_name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `uhas_designation`
+--
+
+INSERT INTO `uhas_designation` (`id`, `designation_name`) VALUES
+(41, 'Chief Accounting Assistant'),
+(42, 'Chief Administrative Assistant'),
+(43, 'Chief Assistant Binder'),
+(44, 'Chief Assistant Printer'),
+(45, 'Auditing Assistant'),
+(46, 'Chief Dental Hygienist/Therapist'),
+(47, 'Chief Dental Surgery Assistant'),
+(48, 'Chief Dental Technologist'),
+(49, 'Chief Designer'),
+(50, 'Chief Dispensing Technician'),
+(51, 'Chief Domestic Bursar'),
+(52, 'Chief Draughtsman'),
+(53, 'Chief Estate Assistant'),
+(54, 'Chief Fire Prevention Officer'),
+(55, 'Chief Health Superintendent'),
+(56, 'Chief ICT Assistant'),
+(57, 'Chief Instructor'),
+(58, 'Chief Laboratory Technician'),
+(59, 'Chief Library Assistant'),
+(60, 'Chief Medical Assistant'),
+(61, 'Chief Medical Assistant/Illustrator/Artist'),
+(62, 'Chief Medical Photographer'),
+(63, 'Chief Medical Records Technician'),
+(64, 'Chief Midwifery Superintendent'),
+(65, 'Chief Nurse Anesthetist'),
+(66, 'Chief Nursing Officer'),
+(67, 'Chief Organiser'),
+(68, 'Chief Performing Artist'),
+(69, 'Chief Porter'),
+(70, 'Chief Procurement Assistant'),
+(71, 'Chief Quantity Surveyor Assistant'),
+(72, 'Chief Research Assistant'),
+(73, 'Chief Security Officer'),
+(74, 'Chief Stores Superintendent'),
+(75, 'Chief Teacher'),
+(76, 'Chief Technician'),
+(77, 'Chief Telephone Superintendent'),
+(78, 'Chief University Sports Coach'),
+(79, 'Chief Work Superintendent'),
+(80, 'Chief X-Ray Technician'),
+(81, 'Clerk of Works'),
+(82, 'Chief Assistant Curator'),
+(83, 'Farm Manager'),
+(84, 'Superintendent Technologist'),
+(85, 'Transport Officer'),
+(86, 'Principal Accounting Assistant'),
+(87, 'Principal Administrative Assistant'),
+(88, 'Principal Assistant Binder'),
+(89, 'Principal Assistant Bookshop Manager'),
+(90, 'Principal Assistant Curator'),
+(91, 'Principal  Assistant Farm Manager'),
+(92, 'Principal Assistant Printer'),
+(93, 'Principal Assistant Transport Officer'),
+(94, 'Principal Auditing Assistant'),
+(95, 'Principal Clerks of Works'),
+(96, 'Principal Data Operating Officer'),
+(97, 'Principal Dental Technologist'),
+(98, 'Principal Designer'),
+(99, 'Principal Dispensing Technician'),
+(100, 'Principal Domestic Bursar'),
+(101, 'Principal Draughtsman'),
+(102, 'Principal Estate Assistant'),
+(103, 'Principal Fire Prevention Officer'),
+(104, 'Principal Health Superintendent'),
+(105, 'Principal ICT Assistant'),
+(106, 'Principal Instructor'),
+(107, 'Principal Laboratory Technician'),
+(108, 'Principal Library Assistant'),
+(109, 'Principal Medical Artist/Instructor'),
+(110, 'Principal Medical Assistant'),
+(111, 'Principal Medical Photographer'),
+(112, 'Principal Medical Records Technician'),
+(113, 'Principal Midwifery Superintendent'),
+(114, 'Principal Nurse Anesthetist'),
+(115, 'Principal Nursing Officer'),
+(116, 'Principal Organiser'),
+(117, 'Principal Performing Artist'),
+(118, 'Principal Porter'),
+(119, 'Principal Procurement Assistant'),
+(120, 'Quality Surveyor Assistant'),
+(121, 'Senior Medical Artist/Instructor'),
+(122, 'Senior Medical Photographer'),
+(123, 'Senior Medical Records Technician'),
+(124, 'Senior Midwifery Superintendent'),
+(125, 'Senior Nurse Anesthetist'),
+(126, 'Senior Nursing Officer'),
+(127, 'Senior Organiser'),
+(128, 'Senior Performing Artist'),
+(129, 'Senior Porter'),
+(130, 'Senior Procurement Assistant'),
+(131, 'Senior Research Assistant'),
+(132, 'Senior Security Officer'),
+(133, 'Senior Teacher'),
+(134, 'Senior Technician'),
+(135, 'Senior Telephone Superintendent'),
+(136, 'Senior University Sports Coach'),
+(137, 'Senior Works Superintendent'),
+(138, 'Senior X-Ray Technician'),
+(139, 'Accounting Assistant'),
+(140, 'Administrative Assistant'),
+(141, 'Assistant Binder'),
+(142, 'Assistant Clerk of Works'),
+(143, 'Assistant Curator'),
+(144, 'Assistant Farm Manager'),
+(145, 'Assistant Bookshop Manager'),
+(146, 'Assistant Printer'),
+(147, 'Assistant Transport Officer'),
+(148, 'Data Entry Officer'),
+(149, 'Dental Hygienist Therapist'),
+(150, 'Dental Surgery Assistant'),
+(151, 'Dental Technologist'),
+(152, 'Dispensing Technician'),
+(153, 'Domestic Bursar'),
+(154, 'Draughtsman'),
+(155, 'Estate Assistant'),
+(156, 'Fire Prevention Officer'),
+(157, 'Health Superintendent'),
+(158, 'ICT Assistant'),
+(159, 'Instructor'),
+(160, 'Chief Driver'),
+(161, 'Assistant Technician'),
+(162, 'Assistant Porter'),
+(163, 'Senior Estate Assistant'),
+(164, 'Bindery Assistant 1'),
+(165, 'Bookshop Assistant I'),
+(166, 'Chief Cook/Baker'),
+(167, 'Senior Health Inspector'),
+(168, 'Chief Steward'),
+(169, 'Dental Technical Assistant I'),
+(170, 'Foreman'),
+(171, 'Assistant Security Officer'),
+(172, 'Health Inspector I'),
+(173, 'Junior Library Assistant I'),
+(174, 'Junior Research Assistant I'),
+(175, 'Laundry Supervisor'),
+(176, 'Overseer'),
+(177, 'Printing Assistant I'),
+(178, 'Senior Accounts Clerk'),
+(179, 'Senior Audit Clerk'),
+(180, 'Senior Clerk'),
+(181, 'Senior Departmental Assistant'),
+(182, 'Senior Dispensing Assistant'),
+(183, 'Senior Domestic Assistant'),
+(184, 'Senior Class Assistance'),
+(185, 'Senior Store Keeper'),
+(186, 'Traffic Supervisor'),
+(187, 'Farm Overseer I'),
+(188, 'Artisan'),
+(189, 'Assistant Prosector I'),
+(190, 'Bookshop Assistant II'),
+(191, 'Senior Campus Guard'),
+(192, 'Assistant Draughtsman II'),
+(193, 'Technical Assistant I'),
+(194, 'Dancer I'),
+(195, 'Dispensing Assistant I'),
+(196, 'Drummer I'),
+(197, 'Farm Overseer II'),
+(198, 'Junior Dental Assistant II'),
+(199, 'Meter Reader I'),
+(200, 'Audit Clerk II'),
+(201, 'Campus Guard I'),
+(202, 'Caterpillar Driver/Tractor Operator'),
+(203, 'Clerk II'),
+(204, 'Computer Typesetter III'),
+(205, 'Dispensing Assistant II'),
+(206, 'Driver I'),
+(207, 'Fireman'),
+(208, 'Life Guard I'),
+(209, 'Meter Reader II'),
+(210, 'Senior Cook/Baker'),
+(211, 'Assistant Draughtsman III'),
+(212, 'Storekeeper II'),
+(213, 'Head Mortuaryman'),
+(214, 'Senior Typist'),
+(215, 'Ward/Health Care Assistant'),
+(216, 'Driver II'),
+(217, 'Campus Guard II'),
+(218, 'Nurseryman'),
+(219, 'Sanitary/Health Headman/Labourer Headman'),
+(220, 'Supervisor'),
+(221, 'Assistant Overseer III'),
+(222, 'Baker'),
+(223, 'Cook'),
+(224, 'Dancer III'),
+(225, 'Drummer III'),
+(226, 'Junior Library Assistant III'),
+(227, 'Junior Research Assistant III'),
+(228, 'Labourer Stockman'),
+(229, 'Nurse/Ward Assistant'),
+(230, 'Head Cleaner-Mesenger'),
+(231, 'Senior Conservancy Labourer'),
+(232, 'Senior Laundryman'),
+(233, 'Senior Sanitary Labourer'),
+(234, 'Technician Assistant II'),
+(235, 'Technician Assistant III'),
+(236, 'Telephonist'),
+(237, 'Tradesman II/Mechanic II'),
+(238, 'Typist I'),
+(239, 'Conservancy Labourer/Labourer Headman'),
+(240, 'Registrar'),
+(241, 'Deputy Registrar'),
+(242, 'College Registrar'),
+(243, 'Senior Assistant Registrar'),
+(244, 'Assistant Registrar'),
+(245, 'Junior Assistant Registrar'),
+(246, 'Director of Academics'),
+(247, 'Director of Administration'),
+(248, 'Director (ITSD)'),
+(249, 'Director of HR'),
+(250, 'Deputy Director of Finance'),
+(251, 'College Finance Officer'),
+(252, 'Senior Accountant'),
+(253, 'Accountant'),
+(254, 'Assistant Accountant'),
+(255, 'Director of Audit'),
+(256, 'Deputy Director of Internal Audit'),
+(257, 'Senior Internal Auditor'),
+(258, 'Internal Auditor'),
+(259, 'Assistant Internal Auditor'),
+(260, 'Director of Works/Development'),
+(261, 'Deputy Director of Works/Development'),
+(262, 'Senior Estates Officer'),
+(263, 'Senior Quantity Surveyor'),
+(264, 'Senior Engineer'),
+(265, 'Senior Architect'),
+(266, 'Senior Assistant Estate Officer'),
+(267, 'Quantity/Land Surveyor'),
+(268, 'Works/Physical Development Manager'),
+(269, 'Engineer'),
+(270, 'Architect'),
+(271, 'Assistant Engineer'),
+(272, 'Assistant Estate Officer'),
+(273, 'Assistant Quantity/Land Surveyor'),
+(274, 'Assistant Architect'),
+(275, 'Planner'),
+(276, 'Curator'),
+(277, 'Director of Procurement'),
+(278, 'Senior Procurement Officer'),
+(279, 'Procurement Officer'),
+(280, 'Assistant Procurement Officer'),
+(281, 'Director of ICT'),
+(282, 'Deputy Director of ICT'),
+(283, 'Senior Systems Analyst/Senior Systems Programmer'),
+(284, 'Programmer/Web Master/IT System Administrator'),
+(285, 'Assistant Analyst/Systems Programmer'),
+(286, 'Director of Health Services'),
+(287, 'Deputy Director of Medical Services'),
+(288, 'Principal Medical Officer/Medical Consultant'),
+(289, 'Senior Dental Surgeon'),
+(290, 'Senior Medical Officer'),
+(291, 'Medical Officer'),
+(292, 'Senior Pharmacist'),
+(293, 'Pharmacist'),
+(294, 'Assistant Pharmacist'),
+(295, 'Hospital Administrator'),
+(296, 'Head, Security Service'),
+(297, 'Deputy Head, Security Service'),
+(298, 'Principal  Archivist'),
+(299, 'Senior Archivist'),
+(300, 'Archivist'),
+(301, 'Director of Sports'),
+(302, 'Deputy Director of Sports'),
+(303, 'Senior Coach'),
+(304, 'Coach'),
+(305, 'Director of Counselling'),
+(306, 'Senior Counselling'),
+(307, 'Deputy Director of Counselling'),
+(308, 'Counsellor'),
+(309, 'Program Manager'),
+(310, 'In-House Counsel'),
+(311, 'Institutional Research Expect'),
+(312, 'Marketing Manager'),
+(313, 'Information Communication Manager'),
+(314, 'Librarian'),
+(315, 'Deputy Librarian'),
+(316, 'Senior Assistant Librarian'),
+(317, 'Assistant Librarian'),
+(318, 'University Printer/Printing Press Manager'),
+(319, 'Manager of Hotels'),
+(320, 'Business Development Manager'),
+(321, 'Public Relations Coordinator'),
+(322, 'Research Development Officer'),
+(323, 'Coordinator'),
+(324, 'Head of Counselling/Chaplain'),
+(325, 'Quality Assurance Officer'),
+(326, 'Senior ICT Assistant');
+
 -- --------------------------------------------------------
 
 --
@@ -721,6 +1118,19 @@ CREATE TABLE `uhas_staff_category` (
   `id` int(11) NOT NULL,
   `name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `uhas_staff_category`
+--
+
+INSERT INTO `uhas_staff_category` (`id`, `name`) VALUES
+(1, 'Senior Administrative Staff'),
+(2, 'Academic Staff'),
+(3, 'Non Academic Staff'),
+(4, 'Junior Staff'),
+(5, 'National Service Personnel (NSP)'),
+(6, 'Professional Staff'),
+(7, 'Technical Staff');
 
 -- --------------------------------------------------------
 
@@ -1011,13 +1421,13 @@ ALTER TABLE `academic_rank`
 -- AUTO_INCREMENT for table `activities`
 --
 ALTER TABLE `activities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `calendar`
@@ -1029,7 +1439,7 @@ ALTER TABLE `calendar`
 -- AUTO_INCREMENT for table `campus`
 --
 ALTER TABLE `campus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `conferences`
@@ -1047,25 +1457,25 @@ ALTER TABLE `deceased`
 -- AUTO_INCREMENT for table `departments`
 --
 ALTER TABLE `departments`
-  MODIFY `dept_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `dept_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `directories`
 --
 ALTER TABLE `directories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `employee_status`
 --
 ALTER TABLE `employee_status`
-  MODIFY `id_employee_status` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_employee_status` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `highest_qualification`
 --
 ALTER TABLE `highest_qualification`
-  MODIFY `id_highest_qualification` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_highest_qualification` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `hr_member`
@@ -1077,7 +1487,7 @@ ALTER TABLE `hr_member`
 -- AUTO_INCREMENT for table `institutes`
 --
 ALTER TABLE `institutes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `leave`
@@ -1089,7 +1499,7 @@ ALTER TABLE `leave`
 -- AUTO_INCREMENT for table `login_logs`
 --
 ALTER TABLE `login_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `meetings`
@@ -1119,7 +1529,7 @@ ALTER TABLE `personnel`
 -- AUTO_INCREMENT for table `personnel_file`
 --
 ALTER TABLE `personnel_file`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `post_retirement_contract`
@@ -1161,7 +1571,7 @@ ALTER TABLE `seminars`
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=192;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
 
 --
 -- AUTO_INCREMENT for table `system_logs`
@@ -1179,13 +1589,13 @@ ALTER TABLE `trainings`
 -- AUTO_INCREMENT for table `uhas_designation`
 --
 ALTER TABLE `uhas_designation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=327;
 
 --
 -- AUTO_INCREMENT for table `uhas_staff_category`
 --
 ALTER TABLE `uhas_staff_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user`
