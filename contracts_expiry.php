@@ -16,7 +16,8 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $filter_department = isset($_GET['department']) ? $_GET['department'] : '';
 $filter_designation = isset($_GET['designation']) ? $_GET['designation'] : '';
 
-$filter_query = "WHERE end_of_contract_date <= '$date_6_months_later'";
+$filter_query = "WHERE end_of_contract_date IS NOT NULL AND end_of_contract_date != '0000-00-00' AND end_of_contract_date <= '$date_6_months_later'";
+
 if ($search) {
     $filter_query .= " AND (full_name LIKE '%$search%' OR email LIKE '%$search%')";
 }
@@ -150,7 +151,7 @@ $designations = $conn->query("SELECT DISTINCT designation FROM staff");
     <?php endif; ?>
 
     <form method="GET" action="export_contract_expiry.php" class="mt-3 text-end">
-        <button><a href="home.php" class="btn btn-uhas mb-3">Back to home</button></a>
+        <a href="home.php" class="btn btn-uhas mb-3">Back to home</a>
         <button type="submit" name="export_excel" class="btn btn-uhas">Export to Excel</button>
         <button type="submit" name="export_pdf" class="btn btn-uhas">Export to PDF</button>
     </form>

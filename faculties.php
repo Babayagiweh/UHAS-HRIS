@@ -142,7 +142,13 @@ $result = $conn->query($sql);
 <footer class="text-center">
     <p>&copy; <?= date("Y"); ?> University of Health and Allied Sciences. All Rights Reserved.</p>
 </footer>
-
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 <script>
     // Print Functionality
     function printTable() {

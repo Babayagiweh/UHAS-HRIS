@@ -10,7 +10,7 @@ if ($conn->connect_error) {
 // Fetch all staff where campus is 'Dave Campus'
 $sql = "SELECT staff_id, full_name, department, campus, date_on_present_grade, highest_qualification, dob, gender 
         FROM staff 
-        WHERE campus = 'Dave'";
+        WHERE campus = 'Dave campus'";
 $result = $conn->query($sql);
 ?>
 

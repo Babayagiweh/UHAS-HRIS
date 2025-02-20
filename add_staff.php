@@ -372,7 +372,7 @@ $staffCategoriesQuery = $mysqli->query("SELECT id, name FROM uhas_staff_category
 
    <!-- Submit Button -->
 <div class="text-center mt-4">
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button><BR><BR>
     <a href="home.php" class="btn btn-secondary">Back to Homepage</a>
 </div>
 

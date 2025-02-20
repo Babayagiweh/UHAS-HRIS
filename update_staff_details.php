@@ -34,44 +34,63 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 // Handle the form submission to update the staff information
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Capture form data
+    $staff_id = $_POST['staff_id'];
+    $controller_no = $_POST['controller_no'];
+    $ghanacard_no = $_POST['ghanacard_no'];
+    $duty_status = $_POST['duty_status'];
     $first_name = $_POST['first_name'];
     $middle_name = $_POST['middle_name'];
     $last_name = $_POST['last_name'];
+    $title = $_POST['title'];
     $full_name = $_POST['full_name'];
     $present_appointment = $_POST['present_appointment'];
     $employee_status = $_POST['employee_status'];
     $staff_category = $_POST['staff_category'];
     $designation = $_POST['designation'];
-    $department = $_POST['department'];
+   
     $phone = $_POST['phone'];
     $email_official = $_POST['email_official'];
     $gender = $_POST['gender'];
     $dob = $_POST['dob'];
     $marital_status = $_POST['marital_status'];
     $qualifications = $_POST['qualifications'];
+    $highest_qualification = $_POST['highest_qualification'];
+    $department = $_POST['department'];
+    $campus = $_POST['campus'];
+    $birthday = $_POST['birthday'];
+
 
     // SQL to update the staff information
     $update_sql = "UPDATE staff SET 
+                    staff_id = ?,
+                    controller_no = ?,
+                    ghanacard_no = ?,
+                    duty_status = ?,
                     first_name = ?, 
                     middle_name = ?, 
                     last_name = ?, 
+                    title = ?,
                     full_name = ?,
                     present_appointment = ?,
                     employee_status = ?,
                     staff_category = ?,
                     designation = ?, 
-                    department = ?, 
+                   
                     phone = ?, 
                     email_official = ?, 
                     gender = ?, 
                     dob = ?, 
                     marital_status = ?, 
-                    qualifications = ? 
+                    qualifications = ?,
+                    highest_qualification = ?,
+                    department = ?,
+                    campus = ?,
+                    birthday =?
                     WHERE id = ?";
 
     // Prepare statement and bind parameters
     $stmt = $conn->prepare($update_sql);
-    $stmt->bind_param("sssssssssssssssi", $first_name, $middle_name, $last_name, $full_name, $present_appointment, $employee_status, $staff_category, $designation, $department, $phone, $email_official, $gender, $dob, $marital_status, $qualifications, $id);
+    $stmt->bind_param("sssssssssssssssssssssssi", $staff_id, $controller_no, $ghanacard_no, $duty_status, $first_name, $middle_name, $last_name, $title, $full_name, $present_appointment, $employee_status, $staff_category, $designation, $phone, $email_official, $gender, $dob, $marital_status, $qualifications, $highest_qualification, $department, $campus, $birthday, $id);
 
     // Execute the query and check for success
     if ($stmt->execute()) {
@@ -143,6 +162,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="card-body">
             <form method="POST" action="">
                 <div class="mb-3">
+                    <label for="staff_id" class="form-label">Staff ID</label>
+                    <input type="text" class="form-control" id="staff_id" name="staff_id" value="<?= htmlspecialchars($staff['staff_id']) ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="controller_no" class="form-label">Controller No</label>
+                    <input type="text" class="form-control" id="controller_no" name="controller_no" value="<?= htmlspecialchars($staff['controller_no']) ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="ghanacard_no" class="form-label">Ghana Card</label>
+                    <input type="text" class="form-control" id="ghanacard_no" name="ghanacard_no" value="<?= htmlspecialchars($staff['ghanacard_no']) ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="duty_status" class="form-label">Duty Status</label>
+                    <input type="text" class="form-control" id="duty_status" name="duty_status" value="<?= htmlspecialchars($staff['duty_status']) ?>" required>
+                </div>
+                <div class="mb-3">
                     <label for="first_name" class="form-label">First Name</label>
                     <input type="text" class="form-control" id="first_name" name="first_name" value="<?= htmlspecialchars($staff['first_name']) ?>" required>
                 </div>
@@ -153,6 +188,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="mb-3">
                     <label for="last_name" class="form-label">Last Name</label>
                     <input type="text" class="form-control" id="last_name" name="last_name" value="<?= htmlspecialchars($staff['last_name']) ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="<?= htmlspecialchars($staff['title']) ?>" required>
                 </div>
                 <div class="mb-3">
                     <label for="full_name" class="form-label">Full Name</label>
@@ -175,10 +214,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="designation" class="form-label">Designation</label>
                     <input type="text" class="form-control" id="designation" name="designation" value="<?= htmlspecialchars($staff['designation']) ?>" required>
                 </div>
-                <div class="mb-3">
+
+               <!-- <div class="mb-3">
                     <label for="department" class="form-label">Department</label>
                     <input type="text" class="form-control" id="department" name="department" value="<?= htmlspecialchars($staff['department']) ?>" required>
-                </div>
+                </div> -->
+
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone</label>
                     <input type="text" class="form-control" id="phone" name="phone" value="<?= htmlspecialchars($staff['phone']) ?>">
@@ -195,10 +236,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <option value="Other" <?= $staff['gender'] == 'Other' ? 'selected' : '' ?>>Other</option>
                     </select>
                 </div>
-             <!--   <div class="mb-3">
+              <div class="mb-3">
                     <label for="dob" class="form-label">Date of Birth</label>
                     <input type="date" class="form-control" id="dob" name="dob" value="<?= htmlspecialchars($staff['dob']) ?>" required>
-                </div>-->
+                </div>
                 <div class="mb-3">
                     <label for="marital_status" class="form-label">Marital Status</label>
                     <input type="text" class="form-control" id="marital_status" name="marital_status" value="<?= htmlspecialchars($staff['marital_status']) ?>">
@@ -206,6 +247,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="mb-3">
                     <label for="qualifications" class="form-label">Qualifications</label>
                     <textarea class="form-control" id="qualifications" name="qualifications"><?= htmlspecialchars($staff['qualifications']) ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="highest_qualification" class="form-label">Highest Qualifications</label>
+                    <textarea class="form-control" id="highest_qualification" name="highest_qualification"><?= htmlspecialchars($staff['highest_qualification']) ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="department" class="form-label">Dir|Sch|Off|Dept|Unit</label>
+                    <textarea class="form-control" id="department" name="department"><?= htmlspecialchars($staff['department']) ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="campus" class="form-label">Campus</label>
+                    <textarea class="form-control" id="campus" name="campus"><?= htmlspecialchars($staff['campus']) ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="birthday" class="form-label">Birth Date</label>
+                    <input type="date" class="form-control" id="birthday" name="birthday" value="<?= htmlspecialchars($staff['birthday']) ?>" required>
                 </div>
                 <button type="submit" class="btn btn-success">Save Changes</button>
             </form>

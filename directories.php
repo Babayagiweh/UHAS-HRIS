@@ -137,7 +137,7 @@ if ($selected_department) {
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title"><?= htmlspecialchars($department['department']); ?></h5>
-                            <a href="departments.php?department=<?= urlencode($department['department']); ?>" class="btn btn-primary">View Staff</a>
+                            <a href="departments.php?department=<?= urlencode($department['department']); ?>" class="btn btn-success">View Staff</a>
                         </div>
                     </div>
                 </div>
@@ -148,7 +148,7 @@ if ($selected_department) {
 
 <!-- Footer -->
 <footer class="bg-yellow text-white text-center py-3">
-    <p>&copy; 2024 University of Health and Allied Sciences | <a href="https://www.uhas.edu.gh" target="_blank" class="text-white">Visit UHAS</a></p>
+    <p>&copy;  <?= date("Y"); ?>  University of Health and Allied Sciences | <a href="https://www.uhas.edu.gh" target="_blank" class="text-white">Visit UHAS</a></p>
 </footer>
 
 <script>

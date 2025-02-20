@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!-- Footer -->
 <div class="footer">
-    &copy; 2024 UHAS HR System. All Rights Reserved.
+    &copy; <?= date('Y') ?>  UHAS HRIS. POWERED BY: DICT.
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

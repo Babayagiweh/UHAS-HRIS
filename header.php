@@ -40,12 +40,10 @@ if ($result->num_rows > 0) {
     
         <a class="navbar-brand text-white fw-bold" href="home.php">
             <img src="uhas_logo.png" alt="UHAS Logo" width="60" height="60" class="d-inline-block align-text-top me-2"> 
-           
-            <span>UHAS-HR Information System Admin Dashboard</span>
+             <a style="font-weight: bold; color: white;">UHAS-HR INFORMATION SYSTEM DASHBOARD</a>
         </a>
-        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+       <!-- Right-Side Menu -->
+            <ul class="navbar-nav ms-auto">
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <!-- Left-Side Menu -->
@@ -69,8 +67,7 @@ if ($result->num_rows > 0) {
                 </li>
             </ul>
 
-            <!-- Right-Side Menu -->
-            <ul class="navbar-nav ms-auto">
+            
                 <!-- Original Menu Items -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-white fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

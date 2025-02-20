@@ -10,33 +10,51 @@ if ($conn->connect_error) {
 // Pagination variables
 $limit = 10; // Number of records per page
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$page = $page > 0 ? $page : 1; // Ensure page is always at least 1
 $offset = ($page - 1) * $limit;
 
 // Search functionality
-$search_query = "";
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $search_query = $conn->real_escape_string($_GET['search']);
-}
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : "";
+
+// Sorting functionality
+$sortable_columns = ['staff_id', 'full_name', 'designation', 'department'];
+$order_by = isset($_GET['sort_by']) && in_array($_GET['sort_by'], $sortable_columns) ? $_GET['sort_by'] : 'full_name';
+$order_dir = isset($_GET['order']) && strtolower($_GET['order']) === 'desc' ? 'DESC' : 'ASC';
 
 // Base query
 $sql_base = "SELECT * FROM staff";
 $sql_conditions = "";
+$params = [];
+$types = "";
 
 // Apply search filter
 if (!empty($search_query)) {
-    $sql_conditions = " WHERE full_name LIKE '%$search_query%' 
-                        OR staff_id LIKE '%$search_query%' 
-                        OR designation LIKE '%$search_query%' 
-                        OR department LIKE '%$search_query%'";
+    $sql_conditions = " WHERE full_name LIKE ? OR staff_id LIKE ? OR designation LIKE ? OR department LIKE ?";
+    $search_param = "%$search_query%";
+    $params = [$search_param, $search_param, $search_param, $search_param];
+    $types = "ssss";
 }
 
 // Get total records for pagination
 $sql_count = $sql_base . $sql_conditions;
-$total_records = $conn->query($sql_count)->num_rows;
+$stmt = $conn->prepare($sql_count);
+if (!empty($types)) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$total_records = $stmt->get_result()->num_rows;
+$stmt->close();
 
 // Fetch paginated records
-$sql = $sql_base . $sql_conditions . " LIMIT $offset, $limit";
-$result = $conn->query($sql);
+$sql = $sql_base . $sql_conditions . " ORDER BY $order_by $order_dir LIMIT ?, ?";
+$params[] = $offset;
+$params[] = $limit;
+$types .= "ii";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param($types, ...$params);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -94,8 +112,8 @@ $result = $conn->query($sql);
         <thead class="table-success">
             <tr>
                 <th>S/No</th>
-                <th>Staff ID</th>
-                <th>Full Name</th>
+                <th><a href="?sort_by=staff_id&order=<?= $order_dir === 'ASC' ? 'desc' : 'asc' ?>&search=<?= urlencode($search_query) ?>">Staff ID</a></th>
+                <th><a href="?sort_by=full_name&order=<?= $order_dir === 'ASC' ? 'desc' : 'asc' ?>&search=<?= urlencode($search_query) ?>">Full Name</a></th>
                 <th>Designation</th>
                 <th>Department</th>
                 <th>Campus</th>
@@ -103,7 +121,7 @@ $result = $conn->query($sql);
                 <th>Phone</th>
                 <th>Date of Birth</th>
                 <th>Action</th>
-                 <th>Edit</th>
+                <th>Edit</th>
             </tr>
         </thead>
         <tbody>
@@ -120,17 +138,16 @@ $result = $conn->query($sql);
                         <td><?= htmlspecialchars($row['email_official']) ?></td>
                         <td><?= htmlspecialchars($row['phone']) ?></td>
                         <td><?= htmlspecialchars($row['dob']) ?></td>
+                        <td><a href="view_profile.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm">View</a></td>
                         <td>
-                            <a href="view_profile.php?id=<?= $row['id'] ?>" class="btn btn-primary btn-sm">View</a> 
-                        </td>
-                         <td>
-                            <a href="update_staff_details.php?id=<?= $row['id'] ?>" class="btn btn-primary btn-sm">Edit</a> 
+                            <a href="update_staff_details.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="delete_staff_details.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="10" class="text-center">No staff found.</td>
+                    <td colspan="11" class="text-center">No staff found.</td>
                 </tr>
             <?php endif; ?>
         </tbody>
@@ -143,11 +160,17 @@ $result = $conn->query($sql);
     ?>
     <nav>
         <ul class="pagination">
+            <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                <a class="page-link" href="?page=<?= $page - 1 ?>&search=<?= urlencode($search_query) ?>&sort_by=<?= $order_by ?>&order=<?= $order_dir ?>">Previous</a>
+            </li>
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                 <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                    <a class="page-link" href="?page=<?= $i ?>&search=<?= urlencode($search_query) ?>"><?= $i ?></a>
+                    <a class="page-link" href="?page=<?= $i ?>&search=<?= urlencode($search_query) ?>&sort_by=<?= $order_by ?>&order=<?= $order_dir ?>"><?= $i ?></a>
                 </li>
             <?php endfor; ?>
+            <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                <a class="page-link" href="?page=<?= $page + 1 ?>&search=<?= urlencode($search_query) ?>&sort_by=<?= $order_by ?>&order=<?= $order_dir ?>">Next</a>
+            </li>
         </ul>
     </nav>
     <?php endif; ?>

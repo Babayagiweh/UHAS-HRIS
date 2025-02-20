@@ -7,7 +7,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch female senior lecturers
+// Fetch male senior lecturers
 $sql = "SELECT staff_id, full_name, department, campus,date_on_present_grade, highest_qualification, dob, gender FROM staff WHERE designation = 'Senior Lecturer' AND gender = 'male'";
 $result = $conn->query($sql);
 ?>
@@ -56,7 +56,7 @@ $result = $conn->query($sql);
     <header class="text-center mb-4">
         <img src="uhas_logo.png" alt="UHAS Logo" style="max-width: 150px;">
         <h1>University of Health and Allied Sciences</h1>
-        <p>HUMAN RESOURCE DIRECTORATE</p>
+        <p> DIRECTORATE OF HUMAN RESOURCE</p>
         <p>PMB 31, Ho, Volta Region, Ghana | +233 (0) 362 196122 | +233 (0) 245 125359</p>
     </header>
 

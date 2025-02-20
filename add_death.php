@@ -9,47 +9,64 @@ if ($conn->connect_error) {
 
 // Handle form submission for individual deceased
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_individual'])) {
-    // Get form data
-    $staff_id = $_POST['staff_id'];
-    $full_name = $_POST['full_name'];
-    $dob = $_POST['dob'];
-    $hometown = $_POST['hometown'];
-    $designation = $_POST['designation'];
-    $staff_category = $_POST['staff_category'];
-    $highest_qualifications = $_POST['highest_qualifications'];
-    $date_hired = $_POST['date_hired'];
-    $years_in_uhas = $_POST['years_in_uhas'];
-    $department = $_POST['department'];
-    $positions_held = $_POST['positions_held'];
-    $date_of_death = $_POST['date_of_death'];
-    $grade_retired = $_POST['grade_retired'];
-    $campus = $_POST['campus'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
+    // Get and sanitize form data
+    $staff_id = mysqli_real_escape_string($conn, $_POST['staff_id']);
+    $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
+    $dob = mysqli_real_escape_string($conn, $_POST['dob']);
+    $hometown = mysqli_real_escape_string($conn, $_POST['hometown']);
+    $designation = mysqli_real_escape_string($conn, $_POST['designation']);
+    $staff_category = mysqli_real_escape_string($conn, $_POST['staff_category']);
+    $highest_qualifications = mysqli_real_escape_string($conn, $_POST['highest_qualifications']);
+    $date_hired = mysqli_real_escape_string($conn, $_POST['date_hired']);
+    $years_in_uhas = mysqli_real_escape_string($conn, $_POST['years_in_uhas']);
+    $department = mysqli_real_escape_string($conn, $_POST['department']);
+    $positions_held = mysqli_real_escape_string($conn, $_POST['positions_held']);
+    $date_of_death = mysqli_real_escape_string($conn, $_POST['date_of_death']);
+    $grade_retired = mysqli_real_escape_string($conn, $_POST['grade_retired']);
+    $campus = mysqli_real_escape_string($conn, $_POST['campus']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
 
     // Handle file upload
     $files = "";
     if (!empty($_FILES['files']['name'])) {
         $target_dir = "uploads/";
-        $files = $target_dir . basename($_FILES["files"]["name"]);
-        if (!move_uploaded_file($_FILES["files"]["tmp_name"], $files)) {
+        $file_name = basename($_FILES["files"]["name"]);
+        $files = $target_dir . $file_name;
+        
+        // Validate file type and size
+        $file_type = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+        $max_file_size = 5 * 1024 * 1024; // 5 MB max file size
+        $allowed_types = ['jpg', 'jpeg', 'png', 'pdf'];
+
+        if (in_array($file_type, $allowed_types) && $_FILES["files"]["size"] <= $max_file_size) {
+            if (!move_uploaded_file($_FILES["files"]["tmp_name"], $files)) {
+                $files = "";
+                echo "<script>alert('File upload failed.');</script>";
+            }
+        } else {
             $files = "";
+            echo "<script>alert('Invalid file type or file size too large.');</script>";
         }
     }
 
-    // Insert into deceased table
-    $sql = "INSERT INTO deceased (staff_id, fullname, DoB, hometown, designation, staff_category, 
-            highest_qualifications, date_hired, number_of_years_in_uhas, department, positions_held, 
-            date_of_death, grade_retired, campus, email, phone, files) 
-            VALUES ('$staff_id', '$full_name', '$dob', '$hometown', '$designation', '$staff_category', 
-            '$highest_qualifications', '$date_hired', '$years_in_uhas', '$department', '$positions_held', 
-            '$date_of_death', '$grade_retired', '$campus', '$email', '$phone', '$files')";
+    // Prepared statement for individual insert
+    $stmt = $conn->prepare("INSERT INTO deceased (staff_id, full_name, DoB, hometown, designation, staff_category, 
+            highest_qualifications, date_hired, years_in_uhas, department, positions_held, 
+            date_of_death, grade_retired, campus, email, phone, file_upload) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    if ($conn->query($sql) === TRUE) {
+    $stmt->bind_param("issssssssissssss", $staff_id, $full_name, $dob, $hometown, $designation, $staff_category, 
+        $highest_qualifications, $date_hired, $years_in_uhas, $department, $positions_held, 
+        $date_of_death, $grade_retired, $campus, $email, $phone, $files);
+
+    if ($stmt->execute()) {
         echo "<script>alert('Deceased information added successfully!');</script>";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $stmt->error;
     }
+
+    $stmt->close();
 }
 
 // Handle bulk file upload (CSV) for deceased
@@ -62,33 +79,36 @@ if (isset($_POST['upload_bulk']) && $_FILES['file']['error'] == 0) {
             $row = 0;
             while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                 if ($row++ > 0) { // Skip the header row
-                    // Extract CSV columns
-                    $staff_id = $data[0];
-                    $full_name = $data[1];
-                    $dob = $data[2];
-                    $hometown = $data[3];
-                    $designation = $data[4];
-                    $staff_category = $data[5];
-                    $highest_qualifications = $data[6];
-                    $date_hired = $data[7];
-                    $years_in_uhas = $data[8];
-                    $department = $data[9];
-                    $positions_held = $data[10];
-                    $date_of_death = $data[11];
-                    $grade_retired = $data[12];
-                    $campus = $data[13];
-                    $email = $data[14];
-                    $phone = $data[15];
-                    $files = $data[16]; // Assume file path or name from CSV
+                    // Extract CSV columns and sanitize them
+                    $staff_id = mysqli_real_escape_string($conn, $data[0]);
+                    $full_name = mysqli_real_escape_string($conn, $data[1]);
+                    $dob = mysqli_real_escape_string($conn, $data[2]);
+                    $hometown = mysqli_real_escape_string($conn, $data[3]);
+                    $designation = mysqli_real_escape_string($conn, $data[4]);
+                    $staff_category = mysqli_real_escape_string($conn, $data[5]);
+                    $highest_qualifications = mysqli_real_escape_string($conn, $data[6]);
+                    $date_hired = mysqli_real_escape_string($conn, $data[7]);
+                    $years_in_uhas = mysqli_real_escape_string($conn, $data[8]);
+                    $department = mysqli_real_escape_string($conn, $data[9]);
+                    $positions_held = mysqli_real_escape_string($conn, $data[10]);
+                    $date_of_death = mysqli_real_escape_string($conn, $data[11]);
+                    $grade_retired = mysqli_real_escape_string($conn, $data[12]);
+                    $campus = mysqli_real_escape_string($conn, $data[13]);
+                    $email = mysqli_real_escape_string($conn, $data[14]);
+                    $phone = mysqli_real_escape_string($conn, $data[15]);
 
-                    // Insert each row of data into the deceased table
-                    $sql = "INSERT INTO deceased (staff_id, fullname, DoB, hometown, designation, staff_category, 
-                            highest_qualifications, date_hired, number_of_years_in_uhas, department, positions_held, 
-                            date_of_death, grade_retired, campus, email, phone, files) 
-                            VALUES ('$staff_id', '$full_name', '$dob', '$hometown', '$designation', '$staff_category', 
-                            '$highest_qualifications', '$date_hired', '$years_in_uhas', '$department', '$positions_held', 
-                            '$date_of_death', '$grade_retired', '$campus', '$email', '$phone', '$files')";
-                    $conn->query($sql);
+                    // Insert each row of data into the deceased table using prepared statements
+                    $stmt = $conn->prepare("INSERT INTO deceased (staff_id, full_name, DoB, hometown, designation, staff_category, 
+                            highest_qualifications, date_hired, years_in_uhas, department, positions_held, 
+                            date_of_death, grade_retired, campus, email, phone) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+                    $stmt->bind_param("issssssssissssss", $staff_id, $full_name, $dob, $hometown, $designation, $staff_category, 
+                        $highest_qualifications, $date_hired, $years_in_uhas, $department, $positions_held, 
+                        $date_of_death, $grade_retired, $campus, $email, $phone);
+
+                    $stmt->execute();
+                    $stmt->close();
                 }
             }
             fclose($handle);
@@ -106,7 +126,7 @@ if (isset($_GET['export_template'])) {
     $output = fopen("php://output", "w");
     fputcsv($output, ['staff_id', 'full_name', 'dob', 'hometown', 'designation', 'staff_category', 
         'highest_qualifications', 'date_hired', 'years_in_uhas', 'department', 'positions_held', 
-        'date_of_death', 'grade_retired', 'campus', 'email', 'phone', 'files']);
+        'date_of_death', 'grade_retired', 'campus', 'email', 'phone']);
     fclose($output);
     exit;
 }

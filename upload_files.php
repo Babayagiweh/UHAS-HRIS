@@ -128,14 +128,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             gap: 20px;
             padding: 20px;
         }
+        
         footer {
-             background-color: #004d00;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    margin-top: auto; /* This pushes the footer to the bottom */
-    width: normal;
-        }
+  background-color: #004d00;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin-top: auto; /* This pushes the footer to the bottom */
+  width: 100%;
+}
+        
 
     </style>
 </head>
@@ -192,12 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p>Last Modified: $lastModified</p>
                     <button class='btn btn-uhas-yellow btn-sm view-files' data-folder='$folder'>View Files</button>
                     
-                    <!-- Add Files Form -->
-                    <form method='POST' enctype='multipart/form-data' class='mt-2'>
-                        <input type='hidden' name='folder_name' value='$folder'>
-                        <input type='file' name='files[]' multiple class='form-control form-control-sm'>
-                        
-                    </form>
+                   
                 </div>";
         }
     } else {

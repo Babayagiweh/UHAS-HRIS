@@ -43,8 +43,6 @@ $departments = $conn->query("SELECT DISTINCT department FROM post_retirement_con
 $designations = $conn->query("SELECT DISTINCT designation FROM post_retirement_contract");
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,48 +61,40 @@ $designations = $conn->query("SELECT DISTINCT designation FROM post_retirement_c
     </style>
 </head>
 <body>
-
 <header class="uhas-header text-center p-3">
     <img src="uhas_logo.png" alt="UHAS Logo" style="max-width: 150px;">
     <h1>Post-Retirement Contracts</h1>
 </header>
-
 <div class="container mt-4">
-    <div class="row mb-3">
+    <form method="GET" class="row g-3 mb-3">
         <div class="col-md-4">
-            <form method="GET">
-                <input type="text" class="form-control" name="search" placeholder="Search by Name or Email" value="<?= $search; ?>">
-            </form>
+            <input type="text" class="form-control" name="search" placeholder="Search by Name or Email" value="<?= htmlspecialchars($search); ?>">
         </div>
         <div class="col-md-3">
-            <form method="GET">
-                <select class="form-control" name="department" onchange="this.form.submit()">
-                    <option value="">Filter by Department</option>
-                    <?php while ($row = $departments->fetch_assoc()): ?>
-                        <option value="<?= $row['department']; ?>" <?= $filter_department == $row['department'] ? 'selected' : ''; ?>>
-                            <?= $row['department']; ?>
-                        </option>
-                    <?php endwhile; ?>
-                </select>
-            </form>
+            <select class="form-control" name="department" onchange="this.form.submit()">
+                <option value="">Filter by Department</option>
+                <?php while ($row = $departments->fetch_assoc()): ?>
+                    <option value="<?= htmlspecialchars($row['department']); ?>" <?= ($filter_department == $row['department']) ? 'selected' : ''; ?>>
+                        <?= htmlspecialchars($row['department']); ?>
+                    </option>
+                <?php endwhile; ?>
+            </select>
         </div>
         <div class="col-md-3">
-            <form method="GET">
-                <select class="form-control" name="designation" onchange="this.form.submit()">
-                    <option value="">Filter by Designation</option>
-                    <?php while ($row = $designations->fetch_assoc()): ?>
-                        <option value="<?= $row['designation']; ?>" <?= $filter_designation == $row['designation'] ? 'selected' : ''; ?>>
-                            <?= $row['designation']; ?>
-                        </option>
-                    <?php endwhile; ?>
-                </select>
-            </form>
+            <select class="form-control" name="designation" onchange="this.form.submit()">
+                <option value="">Filter by Designation</option>
+                <?php while ($row = $designations->fetch_assoc()): ?>
+                    <option value="<?= htmlspecialchars($row['designation']); ?>" <?= ($filter_designation == $row['designation']) ? 'selected' : ''; ?>>
+                        <?= htmlspecialchars($row['designation']); ?>
+                    </option>
+                <?php endwhile; ?>
+            </select>
         </div>
         <div class="col-md-2 text-end">
-            <button onclick="window.print()" class="btn btn-uhas">Print</button>
+            <button type="submit" class="btn btn-uhas">Search</button>
+            <button type="button" onclick="window.print()" class="btn btn-uhas">Print</button>
         </div>
-    </div>
-
+    </form>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -127,48 +117,31 @@ $designations = $conn->query("SELECT DISTINCT designation FROM post_retirement_c
         <tbody>
             <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
-                    <td><?= $row['id']; ?></td>
-                    <td><?= $row['staff_id']; ?></td>
-                    <td><?= $row['full_name']; ?></td>
-                    <td><?= $row['dob']; ?></td>
-                    <td><?= $row['designation']; ?></td>
-                    <td><?= $row['present_appointment']; ?></td>
-                    <td><?= $row['department']; ?></td>
-                    <td><?= $row['highest_qualifications']; ?></td>
-                    <td><?= $row['retired_date']; ?></td>
-                    <td><?= $row['contract_start_date']; ?></td>
-                    <td><?= $row['contract_end_date']; ?></td>
-                    <td><?= $row['campus']; ?></td>
-                    <td><?= $row['email']; ?></td>
-                    <td><?= $row['school']; ?></td>
+                    <?php foreach ($row as $col): ?>
+                        <td><?= htmlspecialchars($col); ?></td>
+                    <?php endforeach; ?>
                 </tr>
             <?php endwhile; ?>
         </tbody>
     </table>
-
     <nav>
         <ul class="pagination justify-content-center">
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?= $i == $page ? 'active' : ''; ?>">
+                <li class="page-item <?= ($i == $page) ? 'active' : ''; ?>">
                     <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
                 </li>
             <?php endfor; ?>
         </ul>
     </nav>
-
     <form method="GET" action="export_post_retirement.php" class="mt-3">
         <button type="submit" name="export_excel" class="btn btn-uhas">Export to Excel</button>
         <button type="submit" name="export_pdf" class="btn btn-uhas">Export to PDF</button>
-        <button><a href="contracts.php" class="btn btn-uhas mb-3">Back</a></button> 
-
+        <a href="contracts.php" class="btn btn-uhas">Back</a>
     </form>
-
 </div>
-
 <footer>
     <p>© <?= date("Y"); ?> University of Health and Allied Sciences. All Rights Reserved.</p>
 </footer>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

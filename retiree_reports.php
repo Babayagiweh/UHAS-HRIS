@@ -212,7 +212,7 @@ if (isset($_GET['send_email'])) {
                     <td>{$row['staff_category']}</td>
                     <td>{$row['highest_qualifications']}</td>
                     <td>{$row['date_hired']}</td>
-                    <td>{$row['number_of_years_in_uhas']}</td>
+                    <td>{$row['years_in_uhas']}</td>
                     <td>{$row['department']}</td>
                     <td>{$row['positions_held']}</td>
                     <td>{$row['date_of_retired']}</td>

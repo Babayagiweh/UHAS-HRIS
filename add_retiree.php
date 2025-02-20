@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_individual'])) 
 
     // Insert into retiree table
     $sql = "INSERT INTO retiree (staff_id, fullname, DoB, hometown, designation, staff_category, 
-            highest_qualifications, date_hired, number_of_years_in_uhas, department, positions_held, 
+            highest_qualifications, date_hired, years_in_uhas, department, positions_held, 
             date_of_retired, grade_retired, campus, email, phone, files) 
             VALUES ('$staff_id', '$full_name', '$dob', '$hometown', '$designation', '$staff_category', 
             '$highest_qualifications', '$date_hired', '$years_in_uhas', '$department', '$positions_held', 
@@ -84,7 +84,7 @@ if (isset($_POST['upload_bulk']) && $_FILES['file']['error'] == 0) {
 
                     // Insert each row of data into the retiree table
                     $sql = "INSERT INTO retiree (staff_id, fullname, DoB, hometown, designation, staff_category, 
-                            highest_qualifications, date_hired, number_of_years_in_uhas, department, positions_held, 
+                            highest_qualifications, date_hired, years_in_uhas, department, positions_held, 
                             date_of_retired, grade_retired, campus, email, phone, files) 
                             VALUES ('$staff_id', '$full_name', '$dob', '$hometown', '$designation', '$staff_category', 
                             '$highest_qualifications', '$date_hired', '$years_in_uhas', '$department', '$positions_held', 

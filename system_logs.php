@@ -13,36 +13,48 @@ if (!isset($_SESSION['user_id'])) {
 // Database connection
 include('config.php');
 
-
-
-
 $conn = new mysqli($servername, $username, $password, $dbname);
-
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Function to record login activity
+/**
+ * Record login activity and return the inserted log ID.
+ */
 function recordLoginActivity($conn, $userId, $username, $firstName, $lastName, $email) {
     $loginTime = date("Y-m-d H:i:s");
-    $ipAddress = $_SERVER['REMOTE_ADDR'];
-    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+    $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
 
     $stmt = $conn->prepare("INSERT INTO login_logs (user_id, username, first_name, last_name, email, login_time, ip_address, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        error_log("Prepare failed: " . $conn->error);
+        return false;
+    }
     $stmt->bind_param("isssssss", $userId, $username, $firstName, $lastName, $email, $loginTime, $ipAddress, $userAgent);
 
     if (!$stmt->execute()) {
         error_log("Error recording login activity: " . $stmt->error);
+        $stmt->close();
+        return false;
     }
+    $logId = $conn->insert_id;
     $stmt->close();
+    return $logId;
 }
 
-// Function to record actions
-function recordAction($conn, $userId, $action) {
-    $logQuery = "UPDATE login_logs SET actions = CONCAT(IFNULL(actions, ''), ?) WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+/**
+ * Record an action for the current login log.
+ */
+function recordAction($conn, $loginLogId, $action) {
+    $logQuery = "UPDATE login_logs SET actions = CONCAT(IFNULL(actions, ''), ?) WHERE id = ?";
     $stmt = $conn->prepare($logQuery);
+    if (!$stmt) {
+        error_log("Prepare failed: " . $conn->error);
+        return;
+    }
     $formattedAction = date("Y-m-d H:i:s") . " - " . $action . "\n";
-    $stmt->bind_param("si", $formattedAction, $userId);
+    $stmt->bind_param("si", $formattedAction, $loginLogId);
 
     if (!$stmt->execute()) {
         error_log("Error recording action: " . $stmt->error);
@@ -50,23 +62,41 @@ function recordAction($conn, $userId, $action) {
     $stmt->close();
 }
 
-// Capture action sent via AJAX
+// AJAX: Capture action sent via POST
 if (isset($_POST['action'])) {
-    $userId = $_SESSION['user_id'];
-    $action = $_POST['action'];
-    recordAction($conn, $userId, $action);
-    exit(); // End the script here after recording the action
+    if (isset($_SESSION['login_log_id'])) {
+        recordAction($conn, $_SESSION['login_log_id'], $_POST['action']);
+    } else {
+        // Fallback: update the latest login log for the user
+        $userId = $_SESSION['user_id'];
+        $logQuery = "UPDATE login_logs SET actions = CONCAT(IFNULL(actions, ''), ?) WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+        $stmt = $conn->prepare($logQuery);
+        $formattedAction = date("Y-m-d H:i:s") . " - " . $_POST['action'] . "\n";
+        $stmt->bind_param("si", $formattedAction, $userId);
+        if (!$stmt->execute()) {
+            error_log("Error recording action: " . $stmt->error);
+        }
+        $stmt->close();
+    }
+    header('Content-Type: application/json');
+    echo json_encode(["status" => "success", "message" => "Action recorded"]);
+    exit();
 }
 
 // Pagination settings
 $limit = 10;  // Number of logs per page
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = isset($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]) 
+    ? (int)$_GET['page'] 
+    : 1;
 $offset = ($page - 1) * $limit;
 
 $adminId = $_SESSION['user_id'];
 
 // Fetch admin details
 $stmt = $conn->prepare("SELECT username, first_name, last_name, email FROM admin WHERE id = ?");
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error);
+}
 $stmt->bind_param("i", $adminId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -74,15 +104,17 @@ $adminData = $result->fetch_assoc();
 $stmt->close();
 
 if ($adminData) {
-    // Record login for the admin user
-    recordLoginActivity($conn, $adminId, $adminData['username'], $adminData['first_name'], $adminData['last_name'], $adminData['email']);
-
-    // Display the data in a table
-    echo "
-    <html lang='en'>
+    // Record login for the admin user and store the log ID in session
+    $loginLogId = recordLoginActivity($conn, $adminId, $adminData['username'], $adminData['first_name'], $adminData['last_name'], $adminData['email']);
+    if ($loginLogId) {
+        $_SESSION['login_log_id'] = $loginLogId;
+    }
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
     <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login Logs</title>
         <style>
             body {
@@ -109,6 +141,7 @@ if ($adminData) {
                 max-width: 1200px;
                 width: 100%;
                 margin-top: 20px;
+                padding: 0 15px;
             }
             table {
                 width: 100%;
@@ -149,22 +182,24 @@ if ($adminData) {
                 padding: 10px 20px;
                 text-decoration: none;
                 border-radius: 5px;
-                margin-top: 20px;
+                margin: 20px 5px;
+                display: inline-block;
             }
             .button:hover {
                 background-color: #004d00;
             }
+            .pagination {
+                margin: 20px 0;
+            }
         </style>
     </head>
     <body>
-
         <header>
-            <img src='uhas_logo.png' alt='UHAS Logo' />
+            <img src="uhas_logo.png" alt="UHAS Logo" />
             <h1>Welcome to UHAS Admin Dashboard</h1>
         </header>
-
-        <div class='container'>
-            <h2>Login Activity for User: " . htmlspecialchars($adminData['username'], ENT_QUOTES, 'UTF-8') . "</h2>
+        <div class="container">
+            <h2>Login Activity for User: <?php echo htmlspecialchars($adminData['username'], ENT_QUOTES, 'UTF-8'); ?></h2>
             <table>
                 <thead>
                     <tr>
@@ -178,94 +213,96 @@ if ($adminData) {
                         <th>IP Address</th>
                     </tr>
                 </thead>
-                <tbody>";
-
-    // Fetch paginated login logs from the database
-    $logQuery = "SELECT * FROM login_logs ORDER BY login_time DESC LIMIT ? OFFSET ?";
-    $stmt = $conn->prepare($logQuery);
-    $stmt->bind_param("ii", $limit, $offset);
-    $stmt->execute();
-    $logResult = $stmt->get_result();
-    $sn = $offset + 1;
-    while ($logRow = $logResult->fetch_assoc()) {
-        echo "
-        <tr>
-            <td>" . $sn++ . "</td>
-            <td>" . htmlspecialchars($logRow['user_id'], ENT_QUOTES, 'UTF-8') . "</td>
-            <td>" . htmlspecialchars($logRow['username'], ENT_QUOTES, 'UTF-8') . "</td>
-            <td>" . htmlspecialchars($logRow['first_name'] . " " . $logRow['last_name'], ENT_QUOTES, 'UTF-8') . "</td>
-            <td>" . htmlspecialchars($logRow['email'], ENT_QUOTES, 'UTF-8') . "</td>
-            <td>" . htmlspecialchars($logRow['login_time'], ENT_QUOTES, 'UTF-8') . "</td>
-           <td>" . nl2br(htmlspecialchars($logRow['actions'] ?? '', ENT_QUOTES, 'UTF-8')) . "</td>
-            <td>" . htmlspecialchars($logRow['ip_address'], ENT_QUOTES, 'UTF-8') . "</td>
-        </tr>";
-    }
-    $stmt->close();
-
-    echo "
+                <tbody>
+                    <?php
+                    // Fetch paginated login logs from the database
+                    $logQuery = "SELECT * FROM login_logs ORDER BY login_time DESC LIMIT ? OFFSET ?";
+                    $stmt = $conn->prepare($logQuery);
+                    if ($stmt) {
+                        $stmt->bind_param("ii", $limit, $offset);
+                        $stmt->execute();
+                        $logResult = $stmt->get_result();
+                        $sn = $offset + 1;
+                        while ($logRow = $logResult->fetch_assoc()) {
+                            ?>
+                            <tr>
+                                <td><?php echo $sn++; ?></td>
+                                <td><?php echo htmlspecialchars($logRow['user_id'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($logRow['username'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($logRow['first_name'] . " " . $logRow['last_name'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($logRow['email'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($logRow['login_time'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo nl2br(htmlspecialchars($logRow['actions'] ?? '', ENT_QUOTES, 'UTF-8')); ?></td>
+                                <td><?php echo htmlspecialchars($logRow['ip_address'], ENT_QUOTES, 'UTF-8'); ?></td>
+                            </tr>
+                            <?php
+                        }
+                        $stmt->close();
+                    } else {
+                        echo "<tr><td colspan='8'>Error fetching logs: " . htmlspecialchars($conn->error) . "</td></tr>";
+                    }
+                    ?>
                 </tbody>
             </table>
-            <div class='pagination'>";
+            <div class="pagination">
+                <?php
+                // Pagination Links
+                $totalQuery = "SELECT COUNT(*) AS total FROM login_logs";
+                $result = $conn->query($totalQuery);
+                if ($result) {
+                    $row = $result->fetch_assoc();
+                    $totalLogs = $row['total'];
+                    $totalPages = ceil($totalLogs / $limit);
 
-    // Pagination Links
-    $totalQuery = "SELECT COUNT(*) AS total FROM login_logs";
-    $result = $conn->query($totalQuery);
-    $row = $result->fetch_assoc();
-    $totalLogs = $row['total'];
-    $totalPages = ceil($totalLogs / $limit);
+                    // Previous button
+                    if ($page > 1) {
+                        echo "<a href='?page=" . ($page - 1) . "' class='button'>Previous</a>";
+                    }
 
-    // Previous and Next buttons
-    if ($page > 1) {
-        echo "<a href='?page=" . ($page - 1) . "' class='button'>Previous</a> <br>
-    <br> ";
-    }
-
-    if ($page < $totalPages) {
-        echo "<a href='?page=" . ($page + 1) . "' class='button'>Next</a>";
-    }
-
-    echo "
-    <br>
-    <br>
-    <br>
-    <br>
+                    // Next button
+                    if ($page < $totalPages) {
+                        echo "<a href='?page=" . ($page + 1) . "' class='button'>Next</a>";
+                    }
+                }
+                ?>
             </div>
-            <a href='home.php' class='button'>Back to Home</a>
+            <a href="home.php" class="button">Back to Home</a>
         </div>
-
         <footer>
-            <p>&copy; 2024 University of Health and Allied Sciences. All rights reserved. <span class='yellow'>Go Green!</span></p>
+            <p>&copy; 2024 University of Health and Allied Sciences. All rights reserved. <span class="yellow">Go Green!</span></p>
         </footer>
-
         <script>
+            // Function to record actions via AJAX
             function recordAction(action) {
-                // Use AJAX to send action to server without reloading the page
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '', true);  // Posting to the same file
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
                         console.log('Action recorded: ' + action);
                     }
                 };
                 xhr.send('action=' + encodeURIComponent(action));
             }
 
-            // Example: Record a button click action
-            document.getElementById('someButton').addEventListener('click', function() {
-                recordAction('Clicked \'Some Button\'');
+            // Example: Record page load action
+            window.addEventListener('load', function() {
+                recordAction('Page Loaded');
             });
 
-            // Example: Record page load
-            window.onload = function() {
-                recordAction('Page Loaded');
-            };
+            // Example: Record a button click if the button exists
+            var someButton = document.getElementById('someButton');
+            if (someButton) {
+                someButton.addEventListener('click', function() {
+                    recordAction("Clicked 'Some Button'");
+                });
+            }
         </script>
-
     </body>
-    </html>";
+    </html>
+    <?php
 } else {
-    echo "No admin data found for admin_id: $adminId<br>";
+    echo "No admin data found for admin_id: " . htmlspecialchars($adminId, ENT_QUOTES, 'UTF-8') . "<br>";
 }
 
 $conn->close();
