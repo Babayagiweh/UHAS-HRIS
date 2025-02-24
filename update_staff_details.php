@@ -43,7 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $last_name = $_POST['last_name'];
     $title = $_POST['title'];
     $full_name = $_POST['full_name'];
+    $date_hired = $_POST['date_hired'];
+    $assumption_of_duty_date = $_POST['assumption_of_duty_date'];
     $present_appointment = $_POST['present_appointment'];
+    $date_on_present_grade = $_POST['date_on_present_grade'];
+
     $employee_status = $_POST['employee_status'];
     $staff_category = $_POST['staff_category'];
     $designation = $_POST['designation'];
@@ -71,7 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     last_name = ?, 
                     title = ?,
                     full_name = ?,
+                    date_hired = ?,
+                    assumption_of_duty_date = ?,
                     present_appointment = ?,
+                    date_on_present_grade = ?,
                     employee_status = ?,
                     staff_category = ?,
                     designation = ?, 
@@ -90,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Prepare statement and bind parameters
     $stmt = $conn->prepare($update_sql);
-    $stmt->bind_param("sssssssssssssssssssssssi", $staff_id, $controller_no, $ghanacard_no, $duty_status, $first_name, $middle_name, $last_name, $title, $full_name, $present_appointment, $employee_status, $staff_category, $designation, $phone, $email_official, $gender, $dob, $marital_status, $qualifications, $highest_qualification, $department, $campus, $birthday, $id);
+    $stmt->bind_param("ssssssssssssssssssssssssssi", $staff_id, $controller_no, $ghanacard_no, $duty_status, $first_name, $middle_name, $last_name, $title, $full_name, $date_hired, $assumption_of_duty_date, $present_appointment, $date_on_present_grade, $employee_status, $staff_category, $designation, $phone, $email_official, $gender, $dob, $marital_status, $qualifications, $highest_qualification, $department, $campus, $birthday, $id);
 
     // Execute the query and check for success
     if ($stmt->execute()) {
@@ -198,8 +205,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="text" class="form-control" id="full_name" name="full_name" value="<?= htmlspecialchars($staff['full_name']) ?>" required>
                 </div>
                 <div class="mb-3">
+                    <label for="date_hired" class="form-label">Date Hired</label>
+                    <input type="date" class="form-control" id="date_hired" name="date_hired" value="<?= htmlspecialchars($staff['date_hired']) ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="assumption_of_duty_date" class="form-label">Assumption of Duty Date</label>
+                    <input type="date" class="form-control" id="assumption_of_duty_date" name="assumption_of_duty_date" value="<?= htmlspecialchars($staff['assumption_of_duty_date']) ?>" required>
+                </div>
+                <div class="mb-3">
                     <label for="present_appointment" class="form-label">Present Appointment</label>
                     <input type="text" class="form-control" id="present_appointment" name="present_appointment" value="<?= htmlspecialchars($staff['present_appointment']) ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="date_on_present_grade" class="form-label">Date of Present Appointment| Grade</label>
+                    <input type="date" class="form-control" id="date_on_present_grade" name="date_on_present_grade" value="<?= htmlspecialchars($staff['date_on_present_grade']) ?>" required>
                 </div>
                 <div class="mb-3">
                     <label for="employee_status" class="form-label">Employee Status</label>
